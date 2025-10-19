@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.fluid</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <script type="importmap">
+    {
+        "imports": {
+        "@google/genai": "https://esm.sh/@google/genai@^0.14.0",
+        "marked": "https://esm.sh/marked@^15.0.8",
+        "mermaid": "https://esm.sh/mermaid@10"
+        }
+    }
+    </script>
+    <script type="module" src="index.tsx"></script>
+</head>
+<body>
+    <div id="main-layout">
+        <!-- Left Sidebar for Flows -->
+        <aside id="left-sidebar" class="sidebar glass-effect">
+            <div class="sidebar-header">
+                <h2>~flows</h2>
+                <button id="new-flow-btn" title="New Flow">+</button>
+            </div>
+            <div id="flow-list" class="sidebar-content"></div>
+            <div class="sidebar-footer">
+                <button class="sidebar-menu-item" id="settings-btn" title="Settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>Settings</span>
+                </button>
+                 <button class="sidebar-menu-item" id="account-btn" title="Account">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Account</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main App Content -->
+        <div id="app">
+            <header>
+                <div class="header-group">
+                    <button id="left-sidebar-toggle" class="sidebar-toggle" aria-label="Toggle flows sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                </div>
+                <h1>.fluid</h1>
+                <div class="header-group">
+                    <button id="undo-btn" class="sidebar-toggle" title="Undo" aria-label="Undo last action" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 13v-2a4 4 0 0 0-4-4H8L4 3"></path><path d="M3 7h4v4"></path></svg>
+                    </button>
+                     <button id="redo-btn" class="sidebar-toggle" title="Redo" aria-label="Redo last action" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13v-2a4 4 0 0 1 4-4h9l4-4"></path><path d="M21 7h-4v4"></path></svg>
+                    </button>
+                </div>
+            </header>
+            <main id="chat-container">
+                <div id="catalysts-container"></div>
+                <div id="chat-history" aria-live="polite" role="log"></div>
+                 <div id="loading-indicator" class="hidden">
+                    <div class="loader"></div>
+                    <span>~flow is thinking...</span>
+                </div>
+            </main>
+            <div id="chat-form-container">
+                 <form id="chat-form">
+                    <label for="chat-input" class="sr-only">Enter your process or question</label>
+                    <textarea id="chat-input" placeholder="describe a process..." required></textarea>
+                    <button type="submit" aria-label="Send message">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                </form>
+                <div id="chat-form-glow"></div>
+            </div>
+        </div>
+
+        <!-- Right Artifact Viewer -->
+        <aside id="artifact-viewer" class="glass-effect hidden">
+            <div class="artifact-header">
+                <div id="artifact-tabs"></div>
+                <div id="artifact-controls"></div>
+                <button id="artifact-close-btn" title="Close Artifact Viewer">&times;</button>
+            </div>
+            <div id="artifact-content"></div>
+        </aside>
+
+    </div>
+
+    <!-- Modals and Overlays -->
+    <div id="modal-backdrop" class="hidden"></div>
+    
+    <div id="nexus-modal" class="modal hidden glass-effect" role="dialog" aria-modal="true" aria-labelledby="nexus-title">
+        <h2 id="nexus-title" class="sr-only">Nexus Command Palette</h2>
+        <input type="text" id="nexus-input" placeholder="type a command or search...">
+        <div id="nexus-results"></div>
+    </div>
+</body>
+</html>
